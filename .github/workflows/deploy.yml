@@ -50,9 +50,9 @@ jobs:
     needs: docker-build-push
     runs-on: ubuntu-latest
     steps:
-      # Step 6: Deploy to Render using API
       - name: Deploy to Render
         run: |
           curl -X POST https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json"
+            -H "Content-Type: application/json" \
+            -d '{"image": "${{ secrets.DOCKER_USERNAME }}/product-app:latest"}'
