@@ -11,6 +11,7 @@ RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 
 COPY src ./src
+COPY .env.docker .env
 
 
 RUN mvn clean package -DskipTests
