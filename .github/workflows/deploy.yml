@@ -23,18 +23,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Create .env file
-        run: |
-          cat <<EOF > ./product-service/.env.docker
-          MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}
-          MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
-          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION=${{ secrets.AWS_REGION }}
-          AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
-          AWS_CLOUDFRONT_URL=${{ secrets.AWS_CLOUDFRONT_URL }}
-          EOF
       
       # Step 4: Build the Docker image with correct context
       - name: Build Docker image
@@ -50,6 +38,12 @@ jobs:
     needs: docker-build-push
     runs-on: ubuntu-latest
     steps:
+      # Step 6: Log in to Render
+      - name: Log in to Render
+        run: |
+          echo ${{ secrets.RENDER_API_KEY }} | curl -X POST https://api.render.com/deploy \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          -d '{"serviceId": "${{ secrets.RENDER_SERVICE_ID }}"}'
       - name: Deploy to Render
         run: |
           curl -X POST https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys \
