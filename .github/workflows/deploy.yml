@@ -38,12 +38,6 @@ jobs:
     needs: docker-build-push
     runs-on: ubuntu-latest
     steps:
-      # Step 6: Log in to Render
-      - name: Log in to Render
-        run: |
-          echo ${{ secrets.RENDER_API_KEY }} | curl -X POST https://api.render.com/deploy \
-          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-          -d '{"serviceId": "${{ secrets.RENDER_SERVICE_ID }}"}'
       - name: Deploy to Render
         run: |
           curl -X POST https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys \
